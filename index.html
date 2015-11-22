@@ -1,0 +1,100 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GHG Emissions Visualization</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"/>
+	<script src="http://d3js.org/d3.v3.min.js"></script>
+	<script src="http://ils.unc.edu/~gotz/courses/js/d3-tip.js"></script>
+	<link rel="stylesheet" type="text/css" href="http://ils.unc.edu/~gotz/courses/js/d3-tip.css"/>
+	<link rel="stylesheet" type="text/css" href="css/local.css"/>
+	<script src="Data.js"></script>
+	<script src="autoComplete.js"></script>
+	<script src="http://d3js.org/topojson.v1.min.js"></script>
+	
+
+</head>
+<body>
+    <div>
+        <div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <h1>Global GHG Emissions<small>Comparison with visualizations</small></h1>
+                </div>
+            </div>
+            <div class="row">
+                <div>
+                    <div class="panel panel-primary col-md-7">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Heat Map</h3>
+                        </div>
+                        <div class="panel-body">
+                            <div class="row">
+                            <div class="col-md-4">
+							<div id="selectCountry"></div>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="radio" name="mode" value="gdp" checked onClick="changeMode('gdp')">Gas Emission against GDP
+                            <input type="radio" name="mode" value="total" onClick="changeMode('total')">Gas Emission
+                        </div>
+                            <div id="mapArea" overflow=hidden"></div>
+                        </div>
+                    </div>
+                </div>
+                <div>
+				   <div class="panel panel-primary col-md-4">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Pie Chart & Line Chart</h3>
+                        </div>
+                        <div class="panel-body">
+                            <div>
+							<svg id="pie_gas" style="height:150px; width:230px; margin:2px; border: 1px solid black;"></svg>
+							<svg id="pie_sector" style="height:150px; width:230px; margin:2px; border: 1px solid black;"></svg>
+							</div>
+							<div>
+							<svg id="line_gas" style="margin:2px; border: 1px solid black;"></svg>
+							<svg id="line_sector" style="margin:2px; border: 1px solid black;"></svg>
+							</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+<script language="JavaScript">
+
+    //Variable to hold autocomplete options
+    var keys;
+
+    //Load US States as options from CSV - but this can also be created dynamically
+    d3.json("data/CountryCode.json",function (csv) {
+        keys=csv;
+        // console.log(keys);
+        start();
+    });
+
+
+    //Call back for when user selects an option
+    function onSelect(d) {
+        alert(d.name);
+    }
+
+    //Setup and render the autocomplete
+    function start() {
+        var mc = autocomplete(document.getElementById('selectCountry'))
+                .keys(keys)
+                .dataField("name")
+                .placeHolder("Search Country - Start typing here")
+                .width(500)
+                .height(500)
+                .onSelected(onSelect)
+                .render();
+    }
+
+</script>
+</html>
