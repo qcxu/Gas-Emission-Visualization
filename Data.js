@@ -18,11 +18,12 @@ var color_line = d3.scale.category10();
 var color_line2 = d3.scale.category10();
 
 var color = d3.scale.ordinal()
-	.range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
+	.range(["#98abc5", "#000000", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
+	color.domain("total_ex", "CO_in", "minor", "F", "CH_in", "NO_in");
 
 var color1 = d3.scale.ordinal()
-	.range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
-
+	.range(["#000000", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
+	color1.domain("energy", "ip", "agri", "waste", "lucf", "bunker");
 
 var start_yr = 1990;
 var end_yr = 2012;
@@ -302,7 +303,7 @@ function draw_init_line_pie() {
 		.attr("id", function(d) {return d.type;})
 		.attr("clip-path", "url(#clip)")
 		.attr("fill","none")
-		.attr("stroke", function(d) { return color_line(d.type); })
+		.attr("stroke", function(d) { return color(d.type); })
 		.attr("stroke-width", 1.5)
 		//.duration(750)
 		.attr("d", function(d) {return line_gas.line(d.values);});
@@ -318,7 +319,7 @@ function draw_init_line_pie() {
 		.attr("id", function(d) {return d.type;})
 		.attr("clip-path", "url(#clip)")
 		.attr("fill","none")
-		.attr("stroke", function(d) { return color_line(d.type); })
+		.attr("stroke", function(d) { return color1(d.type); })
 		.attr("stroke-width", 1.5)
 		//.duration(750)
 		.attr("d", function(d) {return line_sector.line(d.values);});
@@ -368,7 +369,7 @@ function draw_line_pie(country){
 	console.log(filtered_sector_data);
 	
 	//console.log(sector_data);
-	var gas_name_list = d3.keys(gas_data[0]).filter(function(key) { return key !== "year" && key !== "country"; });
+	var gas_name_list = d3.keys(gas_data[0]).filter(function(key) { return key !== "year" && key !== "country" && key != "total_ex"; });
 
 	var gas_for_line = gas_name_list.map(function(type) {
 		return {
@@ -448,7 +449,9 @@ function draw_line_pie(country){
 
 	g.append("path")
 		  .attr("d", arc)
-		  .style("fill", function(d) { return color(d.value); });
+		  .style("fill", function(d) { 
+		  	console.log(d);
+		  	return color(d.data.type); });
 
 	g.append("text")
 		  .attr("transform", function(d) { return "translate(" + arc.centroid(d) + ")"; })
@@ -473,7 +476,7 @@ function draw_line_pie(country){
 
 	g.append("path")
 		  .attr("d", arc)
-		  .style("fill", function(d) { return color1(d.value); });
+		  .style("fill", function(d) { return color1(d.data.type); });
 
 	g.append("text")
 		  .attr("transform", function(d) { return "translate(" + arc.centroid(d) + ")"; })
