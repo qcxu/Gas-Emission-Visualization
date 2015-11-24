@@ -1146,3 +1146,11 @@ td {
     font-weight:bold;
     color: #0000FF;
 }
+
+.legend {
+    font-size: 12px;
+  }
+  
+rect {
+stroke-width: 2;
+}
