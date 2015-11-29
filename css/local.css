@@ -349,7 +349,7 @@ h1 {
 }
 
 /* Buttons */
-.btn {
+/*.btn {
     border-style: none;
     font-size: 14px;
     margin: 14px;
@@ -359,7 +359,7 @@ h1 {
     padding: 10px;
     cursor: pointer;
     min-width: 100px;
-}
+}*/
 
 .btn-slim {
     min-width: 50px;
@@ -454,9 +454,9 @@ h1 {
     color: #ffffff;
 }
 
-.padded-row {
+/*.padded-row {
     margin-top: 10px;
-}
+}*/
 
 .large-padded-row {
     margin-top: 20px;
@@ -1153,4 +1153,51 @@ td {
   
 rect {
 stroke-width: 2;
+}
+
+.mousedover {
+    stroke: #539DC2;
+    stroke-width: 3;
+    cursor:pointer;
+}
+
+.panel-body.charts {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.col-md-7, .col-md-4 {
+    padding-left:0;
+    padding-right:0;
+}
+
+.row {
+    margin-left: 0;
+    margin-right:0;
+}
+
+.panel-body {
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+#mapArea svg {
+    display:block;
+    margin:0 auto;
+}
+
+#selectCountry {
+    margin-top: -7px;
+    margin-left:10px;
+}
+
+.frame {
+    fill: none;
+    stroke: #428bca;
+    stroke-width: 1px;
+}
+
+#mapArea .legend rect{
+    stroke-width:0.5px;
+    stroke: #428bca;
 }

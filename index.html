@@ -7,6 +7,9 @@
     <title>GHG Emissions Visualization</title>
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"/>
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
 	<script src="http://d3js.org/d3.v3.min.js"></script>
 	<script src="http://ils.unc.edu/~gotz/courses/js/d3-tip.js"></script>
 	<link rel="stylesheet" type="text/css" href="http://ils.unc.edu/~gotz/courses/js/d3-tip.css"/>
@@ -14,6 +17,8 @@
 	<script src="Data.js"></script>
 	<script src="autoComplete.js"></script>
 	<script src="http://d3js.org/topojson.v1.min.js"></script>
+    <script src="http://ils.unc.edu/~gotz/courses/js/simple_statistics.js"></script>
+<script src="http://ils.unc.edu/~gotz/courses/js/p_value.js"></script>
 	
 
 </head>
@@ -22,7 +27,7 @@
         <div>
             <div class="row">
                 <div class="col-lg-12">
-                    <h1>Global GHG Emissions<small>Comparison with visualizations</small></h1>
+                    <h1>Global GHG Emissions <small>Comparison with visualizations</small></h1>
                 </div>
             </div>
             <div class="row">
@@ -39,7 +44,13 @@
                         <div class="col-md-8">
                             <input type="radio" name="mode" value="gdp" checked onClick="changeMode('gdp')">Gas Emission against GDP
                             <input type="radio" name="mode" value="total" onClick="changeMode('total')">Gas Emission
+                            <span>&nbsp;&nbsp;</span>
+                            <!-- Button trigger modal -->
+                        <button type="button" id="modal-btn" class="btn-xs btn btn-primary" data-toggle="modal" data-target="#myModal">
+                          Find Correlation
+                        </button>
                         </div>
+                        
                             <div id="mapArea" overflow=hidden"></div>
                         </div>
                     </div>
@@ -49,21 +60,42 @@
                         <div class="panel-heading">
                             <h3 class="panel-title">Pie Chart & Line Chart</h3>
                         </div>
-                        <div class="panel-body">
+                        <div class="panel-body charts">
                             <div>
-							<svg id="pie_gas" style="margin:2px; border: 1px solid black;"></svg>
-							<svg id="pie_sector" style="margin:2px; border: 1px solid black;"></svg>
-							</div>
-							<div>
-							<svg id="line_gas" style="margin:2px; border: 1px solid black;"></svg>
-							<svg id="line_sector" style="margin:2px; border: 1px solid black;"></svg>
-							</div>
+                                <svg id="gas" style="width:500px;height:300px">
+                                </svg>
+                            </div>
+                            <div>
+                                <svg id="sector" style="width:500px;height:300px">
+                                </svg>
+                            
+                            
+                            </div>
+                           
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+    
+
+<!-- Modal -->
+<div class="modal fade bs-example-modal-lg" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Correlation between Gas Emission and Sector</h4>
+      </div>
+      <div class="modal-body">
+      </div>
+      
+    </div>
+  </div>
+</div>
+    
 </body>
 
 <script language="JavaScript">
@@ -81,7 +113,7 @@
 
     //Call back for when user selects an option
     function onSelect(d) {
-        alert(d.name);
+        draw_line_pie(d.name);
     }
 
     //Setup and render the autocomplete

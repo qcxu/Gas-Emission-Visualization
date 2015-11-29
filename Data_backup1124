@@ -9,9 +9,6 @@ var height_l = 300;
 var width_l = 400;
 var margin_l = {top: 60, left: 60, right:30};
 var gas_line, sector_line, gas_pie, sector_pie, x;
-var legendRectSize = 6;
-var legendSpacing = 4;
-var legendText = 60;
 
 
 var color = d3.scale.ordinal()
@@ -68,9 +65,6 @@ function changeMode(modeObj) {
 	d3.select("#line_gas").call(zoom);
 
 	d3.select("#line_sector").call(zoom2);
-
-	/* Render Modal */
-	renderModal();
 
 }
 
@@ -151,8 +145,6 @@ d3.csv("data/Country_GHG_Emissions.csv",
 
 					drawMap(mode);	
 					draw_init_line_pie();
-					/* Render Modal */
-					renderModal();
 					
 
 
@@ -264,12 +256,7 @@ function drawMap(mode){
 				.attr("height", 20)
 				.style("fill", legend_color_scale);
 				//.labels(["<10","","","",">40000"]);
-			if (mode == "gdp") {
-				labels = [">"+Math.round(d3.max(ranges)),"","","","","<"+Math.round(d3.min(ranges))];
-			} else {
-				labels = [">"+Math.round(d3.max(ranges)),"","","","<"+Math.round(d3.min(ranges))];
-			}
-			
+			labels = [">"+Math.round(d3.max(ranges)),"","","","<"+Math.round(d3.min(ranges))];
 			legend.append("text")
 				.attr("x", 26)
 				.attr("y", 10)
@@ -294,78 +281,8 @@ function draw_init_line_pie() {
 
 	getCountryData();
 
-	d3.select("#gas").append("text")
-      .attr("class", "line-title")
-      .attr("x", 250)
-      .attr("y", (15))
-      .attr("text-anchor", "middle")
-      .text(cty);
-
-	// Draw legend
-
-	var legend = d3.select("#gas").selectAll('.legend')
-				  .data(gas_list)
-				  .enter()
-				  .append('g')
-				  .attr('class', 'legend')
-				  .attr('transform', function(d, i) {
-				    var horz = 100+i * (legendSpacing + legendRectSize + legendText);
-				    var vert = 40;
-				    return 'translate(' + horz + ',' + vert + ')';
-				  });
-				
-				  legend.append('rect')
-				  .attr('width', legendRectSize)
-				  .attr('height', legendRectSize)
-				  .style('fill', color)
-				  .style('stroke', color);
-
-				  legend.append('text')
-				  .attr('x', legendRectSize + legendSpacing)
-				  .attr('y', legendRectSize)
-				  .attr("text-anchor", "start")
-				  .text(function(d) { 
-				  	switch(d) {
-				  		case "total_ex": return "Total"; break;
-				  		case "CO_in": return "CO2"; break;
-				  		case "F": return "F Gas"; break;
-				  		case "CH_in": return "CH4"; break;
-				  		case "NO_in": return "N2O"; break;
-				  	}
-				  	});
-
-	var legend = d3.select("#sector").selectAll('.legend')
-				  .data(sector_list)
-				  .enter()
-				  .append('g')
-				  .attr('class', 'legend')
-				  .attr('transform', function(d, i) {
-				    var horz = 30+i * (legendSpacing + legendRectSize + legendText+5);
-				    var vert = 20;
-				    return 'translate(' + horz + ',' + vert + ')';
-				  });
-				
-				  legend.append('rect')
-				  .attr('width', legendRectSize)
-				  .attr('height', legendRectSize)
-				  .style('fill', color1)
-				  .style('stroke', color1);
-
-				  legend.append('text')
-				  .attr('x', legendRectSize + legendSpacing)
-				  .attr('y', legendRectSize)
-				  .attr("text-anchor", "start")
-				  .text(function(d) { 
-				  	switch(d) {
-				  		case "energy": return "Energy"; break;
-				  		case "ip": return "Industry"; break;
-				  		case "agri": return "Agriculture"; break;
-				  		case "waste": return "Waste"; break;
-				  		case "lucf": return "LUCF"; break;
-				  		case "bunker": return "Bunker Fuels"; break;
-				  	}
-				  	});
-
+	//console.log("init_gas_pie:");
+	//console.log(init_gas_pie);
 
 //Initial pie for sector
 
@@ -449,6 +366,20 @@ function draw_init_line_pie() {
 	d3.select("#line_gas").call(tool_tip_line);
 	d3.select("#line_sector").call(tool_tip_line);
 
+	
+	d3.select("#line_gas").append("text")
+      .attr("class", "line-title")
+      .attr("x", width_l/2)
+      .attr("y", (margin_l.top / 2))
+      .attr("text-anchor", "middle")
+      .text(cty);
+
+    d3.select("#line_sector").append("text")
+      .attr("class", "line-title")
+      .attr("x", width_l/2)
+      .attr("y", (margin_l.top / 2))
+      .attr("text-anchor", "middle")
+      .text(cty);
 
 	lineG_gas = d3.select("#line_gas").selectAll('.gas_line')
 		.data(gas_line)
@@ -523,8 +454,6 @@ function draw_init_line_pie() {
 		d3.select("#line_gas").call(zoom);
 
 		d3.select("#line_sector").call(zoom2);
-
-		
 
 } // Draw init pie and line chart ends
 		
@@ -660,14 +589,14 @@ function draw_line_pie(country){
 			.attr("clip-path", "url(#clip)")
 		  .attr("fill", function(m,i) {return color(m.type);})
 		  .style('opacity', 0.5)
-		  .on("mouseover", function(m,i) {tool_tip_line.show(m,i);showCircle(d3.select(this));})		  
-		  .on("mouseout", function(m,i) {tool_tip_line.hide(m,i);hideCircle(d3.select(this));});
 
 
 	circles.transition()
 		  .duration(750)
 		  .attr("cx", function(m,i) {return x(m.year);})
-		  .attr("cy", function(m,i) {return line_gas.y(m.emission);});
+		  .attr("cy", function(m,i) {return line_gas.y(m.emission);})
+		  .on("mouseover", function(m,i) {tool_tip_line.show(m,i);showCircle(d3.select(this));})		  
+		  .on("mouseout", function(m,i) {tool_tip_line.hide(m,i);hideCircle(d3.select(this));});
 
 	
 
@@ -686,13 +615,13 @@ function draw_line_pie(country){
 			.attr("clip-path", "url(#clip)")
 		  .attr("fill", function(m,i) {return color1(m.type);})
 		  .style('opacity', 0.5)
-		  .on("mouseover", function(m,i) {tool_tip_line.show(m,i);showCircle(d3.select(this));})		  
-		  .on("mouseout", function(m,i) {tool_tip_line.hide(m,i);hideCircle(d3.select(this));});
 
 	circles.transition()
 		  .duration(750)
 		  .attr("cx", function(m,i) {return x(m.year);})
-		  .attr("cy", function(m,i) {return line_sector.y(m.emission);});
+		  .attr("cy", function(m,i) {return line_sector.y(m.emission);})
+		  .on("mouseover", function(m,i) {tool_tip_line.show(m,i);showCircle(d3.select(this));})		  
+		  .on("mouseout", function(m,i) {tool_tip_line.hide(m,i);hideCircle(d3.select(this));});
   
 
 
@@ -711,8 +640,6 @@ function draw_line_pie(country){
 	d3.select("#line_gas").call(zoom);
 
 	d3.select("#line_sector").call(zoom2);
-
-	
 
 } // Draw pie and line charts end
 			
@@ -1030,7 +957,7 @@ function showCircle(this_circle) {
 	this_circle.transition()
 	.duration(100)
 	.style("opacity", 1)
-	.attr("r",4);
+	.attr("r",3);
 }
 
 function hideCircle(this_circle) {
@@ -1038,269 +965,7 @@ function hideCircle(this_circle) {
 	.duration(100)
 	.style("opacity", 0.5)
 	.attr("r",2);
-};
-
-/* Modal for Correlation */
-// $("#modal-btn").on("click", function() {
-
-// 	renderModal();
-// 	$('#myModal').modal('show');
-// 	console.log("data");
-// 	console.log(data);
-// });
-
-
-
-function renderModal() {
-	var size = 120,
-		padding = 18,
-		margin = 10,
-		p_threshold = 0.01;
-	
-	/* Data Processing */
-	var nested_data = d3.nest()
-						.key(function(d) {return d.country;})
-						.entries(data);
-	console.log("nest data");
-	console.log(nested_data);
-
-	var corr_data = nested_data.map(function(cty) {
-		var cty_data = nested_data.filter(function(d){return d.key == cty.key});
-		// console.log("cty_data");
-		// console.log(cty_data);
-		var item_list = [];
-		for (var g in gas_pie_list) {
-			for (var s in sector_list) {
-				var item = {};
-				item["country"] = cty.key;
-				item["gasName"] = gas_pie_list[g];
-				item["gas"] = cty_data[0].values.map(function(m) {
-								return m.gas[gas_pie_list[g]];
-							});
-				item["sectorName"] = sector_list[s];
-				item["sector"] = cty_data[0].values.map(function(m) {
-						return m.sector[sector_list[s]];
-					});
-				// console.log(item);
-				item_list.push(item);
-			}
-		}
-		
-		return item_list;
-
-	});
-	console.log("corr_data");
-	console.log(corr_data);
-
-	var corr_data = corr_data.map(function(cty) {
-		var corr = cty.map(function(d) {
-			var corr_coef = ss.sampleCorrelation(d.gas, d.sector);
-			var p = getPforR(corr_coef, d.gas.length);
-			if (!isNaN(p)) {
-				if (p < p_threshold) {
-					p = "Significant"; // Significant
-				} else {
-					p = "NonSignificant"; // Not Significant
-				}
-			} else {
-				p = NaN;
-			}
-			var item = {
-				country: d.country,
-				gasName: d.gasName,
-				sectorName: d.sectorName,
-				corr_coef: corr_coef
-			}
-			item[p] = 1;
-			return item;
-		});
-		return corr;
-	});
-
-	console.log("after_corr_data");
-	console.log(corr_data);
-
-	var p_data=[];
-	corr_data.map(function(d) {
-		d.map(function(m) {
-			p_data.push(m);
-		});	
-	});
-	console.log("p_data");
-	console.log(p_data);
-
-	var modal_data = [];
-	for (var g in gas_pie_list) {
-		for (var s in sector_list) {
-			var sum_corr_data = p_data.filter(function(d) {
-				return ((d.gasName == gas_pie_list[g]) && (d.sectorName == sector_list[s]));
-			});
-			console.log(sum_corr_data);
-			var nested_nan = d3.nest()
-						.key(function(d) {return d.NaN;})
-						.entries(sum_corr_data);
-			console.log("NaN");
-			console.log(nested_nan);
-			var nested_sig = d3.nest()
-						.key(function(d) {return d.Significant;})
-						.entries(sum_corr_data);
-			console.log("Significant");
-			console.log(nested_sig);
-			var nested_nonsig = d3.nest()
-						.key(function(d) {return d.NonSignificant;})
-						.entries(sum_corr_data);
-			console.log("Non-significant");
-			console.log(nested_nonsig);
-			var data_pt = {
-				Significant: nested_sig[0].values.length,
-				NonSignificant: nested_nonsig[0].values.length,
-				gasName: gas_pie_list[g],
-				sectorName: sector_list[s]
-			};
-			modal_data.push(data_pt);			
-		}
-	}
-	console.log("modal_data");
-	console.log(modal_data);
-
-	/* Render SVG */
-	d3.select(".modal-body svg").remove();
-
-	var svg = d3.select(".modal-body").append("svg")
-      .attr("width", size * 6 + padding*8)
-      .attr("height", size * 4 + padding*2)
-    .append("g")
-    .attr("transform", "translate(" + padding*3 + "," + padding + ")");
-
-    d3.select(".modal-body svg").append("g")
-    	.selectAll(".corr")
-    	.data(["CO2", "F Gas", "CH4", "N2O"])
-    	.enter()
-    	.append("text")
-    	.attr("class", "corr")
-			.attr("x", padding)	
-			.attr("y", function(d,i) {return ((size/2) + (size*i) + padding)})
-			//.attr("dy", ".35em")
-			.text(function(d,i) { return d; });
-
-	d3.select(".modal-body svg").append("g")
-    	.selectAll(".corr")
-    	.data(["Energy", "Industry", "Agriculture", "Waste", "LUCF", "Bunker Fuels"])
-    	.enter()
-    	.append("text")
-    	.attr("class", "corr")
-			.attr("x", function(d,i) {return ((size) + (size*i))})	
-			.attr("y", padding)
-			.attr("text-anchor", "middle")
-			.text(function(d,i) { return d; });
-
-	var modal_color = d3.scale.ordinal()
-	.range(["#428bca", "rgb(215, 48, 39)"]);
-
-	var legend = d3.select(".modal-body svg").selectAll('.legend')
-				  .data(["Significant", "Insignificant"])
-				  .enter()
-				  .append('g')
-				  .attr('class', 'legend')
-				  .attr('transform', function(d, i) {
-				    var horz = size*6+padding*3;
-				    var vert = padding *i + padding * 2;
-				    return 'translate(' + horz + ',' + vert + ')';
-				  });
-				
-				  legend.append('rect')
-				  .attr('width', legendRectSize)
-				  .attr('height', legendRectSize)
-				  .style('fill', modal_color)
-				  .style('stroke', modal_color);
-
-				  legend.append('text')
-				  .attr('x', legendRectSize + legendSpacing)
-				  .attr('y', legendRectSize)
-				  .attr("text-anchor", "start")
-				  .text(function(d) {return d;});
-
-				  
-
-    var cell = svg.selectAll(".cell")
-      .data(modal_data)
-    .enter().append("g")
-      .attr("class", "cell")
-      .attr("transform", function(d,i) { return "translate(" + (i%6) * size + "," + (Math.floor(i/6)) * size + ")"; })
-     .each(plot);
-
-  // // Titles for the diagonal.
-  // cell.filter(function(d) { return d.i === d.j; }).append("text")
-  //     .attr("x", padding)
-  //     .attr("y", padding)
-  //     .attr("dy", ".71em")
-  //     .text(function(d) { return d.x; });
-
-  function plot(p) {
-  	console.log(p);
-    var cell = d3.select(this);
-
-    var modal_x = d3.scale.linear()
-    	.range([padding/2,size-padding/2])
-    	.domain([0,size-padding]);
-
-	var modal_y = d3.scale.linear()
-	    .range([size-padding, padding/2])
-	    .domain([0, 200]);
-
-
-	var bar_width = (size-padding-3*margin)/2;
-
-    cell.append("rect")
-        .attr("class", "frame")
-        .attr("x", padding / 2)
-        .attr("y", padding / 2)
-        .attr("width", size - padding)
-        .attr("height", size - padding);
-        
-
-    cell
-        .append("rect")
-        .attr("class", "bar")
-        .attr("x", modal_x(margin))
-        .attr("y", modal_y(p.Significant))
-      	.attr("width", bar_width)
-      	.attr("height", modal_y(200-p.Significant))
-      	.attr("id", p.Significant)
-      	.style("fill", "#428bca");
-
-    cell
-        .append("text")
-        .attr("class", "bar")
-        .attr("x", modal_x(margin)+9)
-        .attr("y", modal_y(p.Significant)-2)
-      	.text(p.Significant)
-      	.style("font-size", "10px");
-
-    cell
-    	.append("rect")
-        .attr("class", "bar")
-        .attr("x", modal_x(margin*2+bar_width))
-        .attr("y", modal_y(p.NonSignificant))
-      	.attr("width", bar_width)
-      	.attr("height", modal_y(200-p.NonSignificant))
-      	.attr("id", p.NonSignificant)
-      	.style("fill", "rgb(215, 48, 39)");
-
-    cell
-        .append("text")
-        .attr("class", "bar")
-        .attr("x", modal_x(margin*2+bar_width)+11)
-        .attr("y", modal_y(p.NonSignificant)-2)
-      	.text(p.NonSignificant)
-      	.style("font-size", "10px");
-
-       
-  }
-	
 }
-
-
 
 
 
